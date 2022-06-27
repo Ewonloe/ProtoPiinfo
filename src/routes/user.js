@@ -21,15 +21,15 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-	query = `INSERT INTO public."Users" (fname, lname1, lname2, password)
-								VALUES ('${req.body.fname}', '${req.body.lname1}', '${req.body.lname2}', '${req.body.password}')`
+	query = `INSERT INTO public."Users" (fname, lnames, email, password)
+								VALUES ('${req.body.fname}', '${req.body.lnames}', '${req.body.email}', '${req.body.password}')`
 	const result = pool.query(query)
 	res.send(result)
 })
 
 router.put('/:id', (req, res) => {
-	query = `UPDATE public."Users" SET (fname, lname1, lname2, password) =
-			('${req.body.fname}', '${req.body.lname1}', '${req.body.lname2}', '${req.body.password}') 
+	query = `UPDATE public."Users" SET (fname, lnames, email, password) =
+			('${req.body.fname}', '${req.body.lnames}', '${req.body.email}', '${req.body.password}')
 			WHERE id = ${req.params.id}`
 
 	const result = pool.query(query)
