@@ -22,7 +22,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
 	query = `INSERT INTO public."Act_sel" (cvp_id, act_id, tries, success, level)
-								VALUES ('${req.body.cvp_id}', '${req.body.act_id}', '${req.body.tries}', '${req.body.success}', '${req.body.level}')`
+								VALUES ('${req.body.cvp_id}', '${req.body.act_id}', '0', '0', '${req.body.level}')`
 	const result = pool.query(query)
 	res.send(result)
 })
@@ -41,5 +41,19 @@ router.delete('/:id', (req, res) => {
 	const result = pool.query(query)
 	res.send(result)
 })
+
+//---------------------------------------------------------------
+
+//Custom services
+
+// Input: cvp_id and act_id
+// Output: Identify the only match and delete
+
+router.delete('/sp/delete', (req, res) => {
+		query = `DELETE FROM public."Act_sel" WHERE cvp_id = ${req.body.cvp_id} AND act_id = ${req.body.act_id}`
+		const result = pool.query(query)
+		res.send(result)
+})
+
 
 module.exports = router

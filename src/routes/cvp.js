@@ -75,19 +75,43 @@ router.get('/:id/skills', (req, res) => {
 
 // Input: CVP, Skill, Level
 // Output: Add 1st game of the Skill in the input level and assign to CVP.
-router.get('/:id/add_skill', (req, res) => {
-	query = `SELECT min(id) FROM public."activities" WHERE skill = ${req.body.skill}`
-
-			 //SELECT skill, MAX(level) FROM cte2 WHERE cvp_id = ${req.params.id} GROUP BY skill`
+router.post('/:id/addSkill', (req, res) => {
+	query = `SELECT min(id) FROM public."Activities"  WHERE skill = '${req.body.skill}'`	
 
 	const result = pool.query(query)
 	result.then(result => {
-		//results.rows
+		query2 = `INSERT INTO public."Act_sel" (cvp_id, act_id, tries, success, level)
+								VALUES ('${req.params.id}', '${result.rows[0].min}', '0', '0', '${req.body.level}')`
+
+		const result2 = pool.query(query2);
+		res.send(result2.rows)
+	})
+
+})
+
+// Input : CVP, Skill
+// Output: All activities of that skill, indicating ID, name, and if exists an act_sel that links it to the CVP received as input.
+
+router.get('/:id/getActs', (req, res) => {
+	query = `SELECT public."Activities".id, public."Activities".name, public."Act_sel".tries
+			FROM public."Activities" LEFT OUTER JOIN public."Act_sel" ON public."Activities".id = public."Act_sel".act_id
+			WHERE public."Activities".skill = '${req.body.skill}'`
+
+	result = pool.query(query)
+	result.then(result => {
+
+		for (i=0; i < result.rows.length; i++)
+		{
+			if (result.rows[i].tries == null)
+				result.rows[i].selected = false
+
+			else
+				result.rows[i].selected = true
+		}
+
 		res.send(result.rows)
 	})
 })
-
-
 
 
 

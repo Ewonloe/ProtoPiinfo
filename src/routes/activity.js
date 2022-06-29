@@ -41,5 +41,12 @@ router.delete('/:id', (req, res) => {
 	res.send(result)
 })
 
+//---------------------------------------------------------------
+
+//Custom services
+
+
+
+
 
 module.exports = router
