@@ -79,9 +79,14 @@ router.post('/:id/addSkill', (req, res) => {
 	query = `SELECT min(id) FROM public."Activities"  WHERE skill = '${req.body.skill}'`	
 
 	const result = pool.query(query)
+	
 	result.then(result => {
 		query2 = `INSERT INTO public."Act_sel" (cvp_id, act_id, tries, success, level)
-								VALUES ('${req.params.id}', '${result.rows[0].min}', '0', '0', '${req.body.level}')`
+								VALUES ('${req.params.id}', '${result.rows[0].min}', '0', '0', '${req.body.level}');
+
+				  DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND act_id = '${result.rows[0].min}' AND level <> '${req.body.level}'`
+
+				 console.log(query2)
 
 		const result2 = pool.query(query2);
 		res.send(result2.rows)
