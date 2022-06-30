@@ -99,20 +99,20 @@ router.post('/:id/addSkill', (req, res) => {
 router.get('/:id/getActs', (req, res) => {
 
 	console.log(req)
-	query = `SELECT public."Activities".id, public."Activities".name, public."Act_sel".tries
+	query = `SELECT public."Activities".id, public."Activities".name, public."Act_sel".cvp_id
 			FROM public."Activities" LEFT OUTER JOIN public."Act_sel" ON public."Activities".id = public."Act_sel".act_id
-			WHERE public."Activities".skill = '${req.query.skill}' AND NOT public."Act_sel".cvp_id <> ${req.params.id}`
+			WHERE public."Activities".skill = '${req.query.skill}'`
 
 	result = pool.query(query)
 	result.then(result => {
 
 		for (i=0; i < result.rows.length; i++)
 		{
-			if (result.rows[i].tries == null)
-				result.rows[i].selected = false
+			if (result.rows[i].cvp_id == req.params.id)
+				result.rows[i].selected = true
 
 			else
-				result.rows[i].selected = true
+				result.rows[i].selected = false
 		}
 
 		res.send(result.rows)
