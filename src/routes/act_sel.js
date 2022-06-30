@@ -42,6 +42,12 @@ router.delete('/:id', (req, res) => {
 	res.send(result)
 })
 
+router.delete('/', (req, res) => {
+	query = `TRUNCATE public."Act_sel"`
+	const result = pool.query(query)
+	res.send(result)
+})
+
 //---------------------------------------------------------------
 
 //Custom services
