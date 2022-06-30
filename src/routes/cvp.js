@@ -98,9 +98,11 @@ router.post('/:id/addSkill', (req, res) => {
 // Output: All activities of that skill, indicating ID, name, and if exists an act_sel that links it to the CVP received as input.
 
 router.get('/:id/getActs', (req, res) => {
+
+	console.log(req)
 	query = `SELECT public."Activities".id, public."Activities".name, public."Act_sel".tries
 			FROM public."Activities" LEFT OUTER JOIN public."Act_sel" ON public."Activities".id = public."Act_sel".act_id
-			WHERE public."Activities".skill = '${req.body.skill}'`
+			WHERE public."Activities".skill = '${req.query.skill}' AND public."Act_sel".cvp_id = ${req.params.id}`
 
 	result = pool.query(query)
 	result.then(result => {
