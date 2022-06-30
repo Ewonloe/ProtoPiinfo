@@ -55,5 +55,4 @@ router.delete('/sp/delete', (req, res) => {
 		res.send(result)
 })
 
-
 module.exports = router
