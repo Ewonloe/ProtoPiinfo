@@ -101,7 +101,7 @@ router.get('/:id/getActs', (req, res) => {
 	console.log(req)
 	query = `SELECT public."Activities".id, public."Activities".name, public."Act_sel".tries
 			FROM public."Activities" LEFT OUTER JOIN public."Act_sel" ON public."Activities".id = public."Act_sel".act_id
-			WHERE public."Activities".skill = '${req.query.skill}' AND public."Act_sel".cvp_id = ${req.params.id}`
+			WHERE public."Activities".skill = '${req.query.skill}' AND NOT public."Act_sel".cvp_id = ${req.params.id}`
 
 	result = pool.query(query)
 	result.then(result => {
