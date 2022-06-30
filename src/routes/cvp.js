@@ -131,7 +131,7 @@ router.get('/:id/getActs', (req, res) => {
 // Input: CVP, Skill
 // Output: Remove all games with that skill from the CVP levels.
 router.delete('/:id/removeSkill', (req, res) => {
-	query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND skill = '${req.body.skill}'`
+	query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND act_id IN (SELECT id FROM public."Activities"  WHERE skill = '${req.body.skill}')`
 	const result = pool.query(query)
 	
 	result.then(result => {
