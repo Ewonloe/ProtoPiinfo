@@ -77,7 +77,6 @@ router.get('/:id/skills', (req, res) => {
 // Output: Add 1st game of the Skill in the input level and assign to CVP.
 router.post('/:id/addSkill', (req, res) => {
 	query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND act_id IN (SELECT id FROM public."Activities"  WHERE skill = '${req.body.skill}')`
-	console.log(query)
 	const sideResult = pool.query(query);
 
 	const result = pool.query(`SELECT id FROM public."Activities"  WHERE skill = '${req.body.skill}'`);
@@ -95,10 +94,9 @@ router.post('/:id/addSkill', (req, res) => {
 				query2 = query2 + ", "
 		}
 
-		console.log(query2)
 		const result2 = pool.query(query2)
 
-		res.send(result.rows)
+		res.send(`Skill ${req.body.skill} added to level ${req.body.level}`)
 	})
 })
 
@@ -131,7 +129,7 @@ router.get('/:id/getActs', (req, res) => {
 // Input: CVP, Skill
 // Output: Remove all games with that skill from the CVP levels.
 router.delete('/:id/removeSkill', (req, res) => {
-	query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND act_id IN (SELECT id FROM public."Activities"  WHERE skill = '${req.body.skill}')`
+	query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND act_id IN (SELECT id FROM public."Activities"  WHERE skill = '${req.query.skill}')`
 	const result = pool.query(query)
 	res.send(result)
 })
