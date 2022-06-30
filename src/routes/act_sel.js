@@ -50,7 +50,7 @@ router.delete('/:id', (req, res) => {
 // Output: Identify the only match and delete
 
 router.delete('/sp/delete', (req, res) => {
-		query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.body.cvp_id}' AND act_id = '${req.body.act_id}'`
+		query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.query.cvp_id}' AND act_id = '${req.query.act_id}'`
 		const result = pool.query(query)
 		res.send(result)
 })
