@@ -76,19 +76,29 @@ router.get('/:id/skills', (req, res) => {
 // Input: CVP, Skill, Level
 // Output: Add 1st game of the Skill in the input level and assign to CVP.
 router.post('/:id/addSkill', (req, res) => {
-	query = `SELECT min(id) FROM public."Activities"  WHERE skill = '${req.body.skill}'`	
+	query = `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND act_id IN (SELECT id FROM public."Activities"  WHERE skill = '${req.body.skill}')`
+	console.log(query)
+	const sideResult = pool.query(query);
 
-	const result = pool.query(query)
+	const result = pool.query(`SELECT id FROM public."Activities"  WHERE skill = '${req.body.skill}'`);
 	
+
 	result.then(result => {
-		query2 =   `DELETE FROM public."Act_sel" WHERE cvp_id = '${req.params.id}' AND skill = '${req.body.skill}';
-					INSERT INTO public."Act_sel" (cvp_id, act_id, tries, success, level)
-								VALUES ('${req.params.id}', '${result.rows[0].min}', '0', '0', '${req.body.level}')`
+
+		query2 = `INSERT INTO public."Act_sel" (cvp_id, act_id, tries, success, level)
+								  VALUES `//('${req.params.id}', '${result.rows}', '0', '0', '${req.body.level}')`
+
+		for (i=0; i<result.rows.length; i++)
+		{
+			query2 = query2 + `('${req.params.id}', '${result.rows[i].id}', '0', '0', '${req.body.level}')`
+			if (i+1 != result.rows.length)
+				query2 = query2 + ", "
+		}
 
 		console.log(query2)
+		const result2 = pool.query(query2)
 
-		const result2 = pool.query(query2);
-		res.send(result2.rows)
+		res.send(result.rows)
 	})
 })
 
@@ -97,7 +107,6 @@ router.post('/:id/addSkill', (req, res) => {
 
 router.get('/:id/getActs', (req, res) => {
 
-	console.log(req)
 	query = `SELECT public."Activities".id, public."Activities".name, public."Act_sel".cvp_id
 			FROM public."Activities" LEFT OUTER JOIN public."Act_sel" ON public."Activities".id = public."Act_sel".act_id
 			WHERE public."Activities".skill = '${req.query.skill}'`
